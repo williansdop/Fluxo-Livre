@@ -8,11 +8,11 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
 
     /**
      * Attributes that can be mass assigned
@@ -20,7 +20,9 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'first_name',
+        'last_name',
+        'cpf',
         'email',
         'password',
     ];
@@ -33,6 +35,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'cpf'
     ];
 
     /**
@@ -80,5 +83,13 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Comment::class, 'comment_user')
                     ->withTimestamps();
+    }
+
+    /**
+     * Accessor to get formatted CPF (123.456.789-00) for display when needed.
+     */
+    public function getFormattedCpfAttribute(): string
+    {
+        return preg_replace('/(\d{3})(\d{3})(\d{3})(\d{2})/', '$1.$2.$3-$4', $this->cpf);
     }
 }
