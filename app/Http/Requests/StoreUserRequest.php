@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rules\Password;
 
 class StoreUserRequest extends FormRequest
@@ -23,10 +24,12 @@ class StoreUserRequest extends FormRequest
      */
     public function rules(): array
     {
+        Log::info("User creation: Beginning input data validation.");
+        
         return [
             'first_name' => ['required', 'string', 'max:100'],
             'last_name'  => ['required', 'string', 'max:100'],
-            'cpf'        => ['required', 'string', 'cpf', 'unique:users,cpf'],
+            'cpf'        => ['required', 'string', 'unique:users,cpf'],
             'email'      => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
             'password'   => ['required', 'string', 'min:8'],
         ];
