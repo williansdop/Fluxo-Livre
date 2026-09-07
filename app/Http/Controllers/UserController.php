@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\LoginRequest;
 use App\Http\Requests\StoreUserRequest;
 use App\Models\User;
 use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
-use Throwable;
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class UserController extends Controller
 {
@@ -25,7 +26,7 @@ class UserController extends Controller
                 'last_name' => $user->last_name,
                 'email' => $user->email
             ];
-            $message = "User successfully created with id {$user->id}";
+            $message = "Usuário criado com sucesso com id {$user->id}";
 
             return $this->jsonResponse(true, $returnData, $message, 201);
         } catch (Throwable $e) {
@@ -34,7 +35,34 @@ class UserController extends Controller
             return $this->jsonResponse(
                 false,
                 null,
-                'An unexpected error occurred during registration.',
+                'Ocorreu um erro inesperado durante o registro.',
+                500
+            );
+        }
+    }
+
+    public function login(LoginRequest $request, UserService $userService): JsonResponse
+    {
+        try{
+            Log::info("User login: Beginning execution.");
+
+            $userData = $request->validated();
+            $validation = $userService->login($userData);
+
+            $message = $validation ? "Login feito com sucesso." : 
+                "Credenciais Inválidas para o e-mail.";
+            $data = $validation ? $validation : null;
+            $code = $validation ? 200 : 401;
+            $success = $validation ? true : false;
+
+            return $this->jsonResponse($success, $data, $message, $code);
+        } catch (Throwable $e) {
+            Log::error('Login failed: ' . $e->getMessage(), ['exception' => $e]);
+
+            return $this->jsonResponse(
+                false,
+                null,
+                'Ocorreu um erro inesperado durante o login',
                 500
             );
         }

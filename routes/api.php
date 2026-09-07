@@ -6,4 +6,5 @@ use Illuminate\Support\Facades\Route;
 // O Laravel aplica automaticamente o prefixo '/api' a estas rotas
 Route::middleware('guest')->group(function () {
     Route::post('/sign-up', [UserController::class, 'signUp'])->name('api.user.signup');
+    Route::post('/login', [UserController::class, 'login'])->name('api.user.login');
 });
