@@ -15,3 +15,5 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/create', [ObstacleController::class, 'createObstacle'])->name('create');
     });
 });
+
+Route::get('/obstacles/{id}', [ObstacleController::class, 'getObstacle'])->name('get-obstacle');

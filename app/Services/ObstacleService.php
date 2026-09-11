@@ -17,4 +17,17 @@ class ObstacleService
         $obstacle = Obstacle::create($obstacleData);
         return $obstacle;
     }
+
+    /**
+     * Handle incoming specific obstacle retrieval requests.
+     *
+     * @param  int  $id
+     * @return ?Obstacle
+     */
+    public function findObstacleWithCategoryAndUser(int $id): ?Obstacle
+    {
+        $obstacle = Obstacle::with(['category:id,title,icon', 'user:id,first_name,last_name'])->find($id);
+        
+        return $obstacle;
+    }
 }

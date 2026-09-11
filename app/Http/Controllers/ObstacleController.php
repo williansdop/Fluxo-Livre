@@ -39,4 +39,27 @@ class ObstacleController extends Controller
             );
         }
     }
+
+    public function getObstacle(ObstacleService $obstacleService, int $id): JsonResponse
+    {
+        try {
+            Log::info("Obstacle retrieval: Beginning execution.");
+            $obstacle = $obstacleService->findObstacleWithCategoryAndUser($id);
+    
+            if (!$obstacle) {
+                return $this->jsonResponse(false, null, 'Obstáculo não encontrado.', 404);
+            }
+    
+            return $this->jsonResponse(true, $obstacle, 'Obstáculo recuperado com sucesso.');
+        } catch (Throwable $e){
+            Log::error('Registration failed: ' . $e->getMessage(), ['exception' => $e]);
+
+            return $this->jsonResponse(
+                false,
+                null,
+                'Ocorreu um erro inesperado durante a criação do obstáculo.',
+                500
+            );
+        }
+    }
 }
