@@ -17,3 +17,4 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 Route::get('/obstacles/{id}', [ObstacleController::class, 'getObstacle'])->name('get-obstacle');
+Route::get('/obstacles', [ObstacleController::class, 'getAllObstacles'])->name('get-all-obstacles');
